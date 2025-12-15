@@ -1,0 +1,51 @@
+{
+  "bot": {
+    "name": "Ultra Professional Bot",
+    "version": "1.0.0",
+    "maintainer": "Bot Developer Team",
+    "language": "en-US"
+  },
+  "performance": {
+    "maxConcurrentThreads": 50,
+    "messageQueueSize": 1000,
+    "cacheExpiry": 300000,
+    "cleanupInterval": 3600000
+  },
+  "security": {
+    "maxMessageLength": 2000,
+    "maxCommandsPerMinute": 30,
+    "blockedUsers": [],
+    "blockedThreads": [],
+    "enableAntiSpam": true,
+    "enableAntiFlood": true
+  },
+  "features": {
+    "autoWelcome": true,
+    "autoReply": false,
+    "mentionResponse": true,
+    "typingIndicator": true,
+    "readReceipt": true,
+    "presence": true
+  },
+  "logging": {
+    "level": "info",
+    "fileRotation": "daily",
+    "maxLogSize": "10MB",
+    "keepLogDays": 30,
+    "logCommands": true,
+    "logErrors": true,
+    "logEvents": true
+  },
+  "funSystem": {
+    "maxLinesPerLoop": 100,
+    "maxConcurrentFuns": 5,
+    "coolDownAfterStop": 5000,
+    "enableRandomDelay": true
+  },
+  "photoSystem": {
+    "ownerPhotoRotation": "random",
+    "adminPhotoFallback": "default",
+    "userPhotoCacheTime": 300000,
+    "maxPhotoSize": "5MB"
+  }
+}

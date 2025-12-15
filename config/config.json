@@ -1,1 +1,8 @@
-
+{
+  "prefix": "!",
+  "admins": ["1000123456789", "1000987654321"],
+  "ownerUid": "61578706761898",
+  "funEnabled": true,
+  "maxAdminPhotos": 3,
+  "delayRange": [300, 600]
+}
