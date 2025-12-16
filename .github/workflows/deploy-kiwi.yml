@@ -68,7 +68,7 @@ jobs:
         chmod +x kiwi-setup.sh
         echo "✅ Kiwi setup script created"
         
-    - name: Run bot for specified time
+    - name: Run bot for speci fied time
       run: |
         RUNTIME=${{ github.event.inputs.runtime }}
         echo "⏰ Running bot for $RUNTIME minutes..."
