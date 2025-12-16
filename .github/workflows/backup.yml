@@ -1,0 +1,63 @@
+name: Backup Configuration
+
+on:
+  schedule:
+    # Run daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Create backup
+      run: |
+        echo "📦 Creating backup..."
+        
+        # Create backup directory
+        BACKUP_DIR="backup-$(date +%Y%m%d-%H%M%S)"
+        mkdir -p $BACKUP_DIR
+        
+        # Backup important files
+        cp -r config $BACKUP_DIR/
+        cp -r data/fun-json $BACKUP_DIR/
+        cp -r assets/owner-photos $BACKUP_DIR/
+        
+        # Create info file
+        cat > $BACKUP_DIR/backup-info.txt << EOF
+        Backup Information
+        =================
+        Date: $(date)
+        Repository: ${{ github.repository }}
+        Branch: main
+        
+        Contents:
+        1. Configuration files (config/)
+        2. Fun JSON files (data/fun-json/)
+        3. Owner photos configuration (assets/owner-photos/)
+        
+        To restore:
+        1. Copy files back to their original locations
+        2. Run: npm start
+        EOF
+        
+        # Create zip archive
+        zip -r $BACKUP_DIR.zip $BACKUP_DIR
+        echo "✅ Backup created: $BACKUP_DIR.zip"
+        
+    - name: Upload backup
+      uses: actions/upload-artifact@v4
+      with:
+        name: config-backup
+        path: '*.zip'
+        retention-days: 30
+        
+    - name: Cleanup
+      run: |
+        rm -rf backup-*.zip
+        rm -rf backup-*
+        echo "✅ Cleanup completed"
