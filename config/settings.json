@@ -1,51 +1,59 @@
 {
-  "bot": {
-    "name": "Ultra Professional Bot",
-    "version": "1.0.0",
-    "maintainer": "Bot Developer Team",
-    "language": "en-US"
+  "delay": {
+    "min": 300,
+    "max": 600,
+    "typing": 1000,
+    "human": 500
   },
-  "performance": {
-    "maxConcurrentThreads": 50,
-    "messageQueueSize": 1000,
-    "cacheExpiry": 300000,
-    "cleanupInterval": 3600000
+  "photo": {
+    "ownerCount": 12,
+    "adminMax": 3,
+    "cacheDuration": 3600000,
+    "maxSize": 10485760
   },
   "security": {
-    "maxMessageLength": 2000,
     "maxCommandsPerMinute": 30,
-    "blockedUsers": [],
-    "blockedThreads": [],
-    "enableAntiSpam": true,
-    "enableAntiFlood": true
+    "blockSpam": true,
+    "logSuspicious": true,
+    "autoBlock": false,
+    "rateLimitWindow": 60000
   },
   "features": {
-    "autoWelcome": true,
+    "funEnabled": true,
     "autoReply": false,
-    "mentionResponse": true,
+    "welcomeMessage": true,
+    "startupNotification": true,
     "typingIndicator": true,
     "readReceipt": true,
-    "presence": true
+    "autoAddFriend": true,
+    "autoShare": true
   },
-  "logging": {
-    "level": "info",
-    "fileRotation": "daily",
-    "maxLogSize": "10MB",
-    "keepLogDays": 30,
-    "logCommands": true,
-    "logErrors": true,
-    "logEvents": true
+  "performance": {
+    "maxThreads": 100,
+    "maxMessages": 1000,
+    "cleanupInterval": 3600000,
+    "logRotation": 86400000
   },
-  "funSystem": {
-    "maxLinesPerLoop": 100,
-    "maxConcurrentFuns": 5,
-    "coolDownAfterStop": 5000,
-    "enableRandomDelay": true
+  "cloudinary": {
+    "cloud_name": "dgs0yrtna",
+    "api_key": "567876213228362",
+    "api_secret": "IyWQbTOlMvKw2cCnVC5EG90wB6c",
+    "upload_preset": "post_master",
+    "enabled": true
   },
-  "photoSystem": {
-    "ownerPhotoRotation": "random",
-    "adminPhotoFallback": "default",
-    "userPhotoCacheTime": 300000,
-    "maxPhotoSize": "5MB"
+  "firebase": {
+    "apiKey": "AIzaSyBF0ydsEMmAvF5p-TI3aDckarGbubZvQWI",
+    "authDomain": "masterlife-ee8bc.firebaseapp.com",
+    "projectId": "masterlife-ee8bc",
+    "storageBucket": "masterlife-ee8bc.firebasestorage.app",
+    "messagingSenderId": "146702308955",
+    "appId": "1:146702308955:web:2aa498872ce393e02d917e",
+    "measurementId": "G-39XF3N3D4R",
+    "enabled": false
+  },
+  "github": {
+    "autoDeploy": true,
+    "schedule": "0 */6 * * *",
+    "runTimeout": 300000
   }
 }

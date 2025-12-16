@@ -1,8 +1,40 @@
 {
   "prefix": "!",
-  "admins": ["1000123456789", "1000987654321"],
-  "ownerUid": "61578706761898",
-  "funEnabled": true,
-  "maxAdminPhotos": 3,
-  "delayRange": [300, 600]
+  "admins": ["100000000000001", "100000000000002"],
+  "autoAddFriend": true,
+  "autoShare": true,
+  "maxGroups": 50,
+  "logLevel": "info",
+  "language": "bn",
+  "ownerName": "RANA (MASTER 🪓)",
+  "ownerLocation": "Faridpur, Dhaka, Bangladesh",
+  "ownerEmail": "ranaeditz333@gmail.com",
+  "ownerPhone": "01847634486",
+  "ownerUID": "61578706761898",
+  "features": {
+    "welcomeMessage": true,
+    "autoReply": false,
+    "typingIndicator": true,
+    "readReceipt": true,
+    "onlineStatus": true
+  },
+  "security": {
+    "maxCommandsPerMinute": 30,
+    "maxMessagesPerMinute": 50,
+    "blockSuspicious": true,
+    "requireConfirmation": false
+  },
+  "funSettings": {
+    "maxDuration": 300,
+    "delayRange": [300, 600],
+    "autoStop": true,
+    "maxMessages": 1000
+  },
+  "paths": {
+    "funJson": "data/fun-json/",
+    "adminPhotos": "data/admin-photos/",
+    "ownerPhotos": "assets/owner-photos/",
+    "logs": "data/logs/",
+    "backups": "data/backups/"
+  }
 }
