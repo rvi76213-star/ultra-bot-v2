@@ -229,11 +229,6 @@ And take yourself 🚀</strong>
 <p class="shimmer-text">🚀 Repository Loading Complete! Star ⭐ this repo for support!</p>
 </div>
 
-<script>
-// GitHub-এ সরাসরি JavaScript কাজ করবে না, কিন্তু CSS দিয়েই পুরো অ্যানিমেশন কাজ করবে
-// এই কমেন্ট শুধু তথ্যের জন্য
-console.log('3D UI Loaded Successfully!');
-</script>
 
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=900&size=42&duration=2800&pause=1200&color=00FF9C&center=true&vCenter=true&width=1300&height=120&lines=☠+BLACK-OPS+MESSENGER+CONTROL+SYSTEM;🧠+ZERO-TRUST+•+ZERO-MERCY+•+FULL+CONTROL;👑+OWNER+IMMUTABLE+•+ADMIN+RESTRICTED+•+USER+SANDBOXED;🚫+NOT+FOR+SCRIPT+KIDS" />
