@@ -1,15 +1,21 @@
-
+#### 𝗬𝗢𝗨𝗥 𝗖𝗥𝗨𝗦𝗛 ⟵𝗼_𝟬
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=900&size=42&duration=2800&pause=1200&color=00FF9C&center=true&vCenter=true&width=1300&height=120&lines=☠+BLACK-OPS+MESSENGER+CONTROL+SYSTEM;🧠+ZERO-TRUST+•+ZERO-MERCY+•+FULL+CONTROL;👑+OWNER+IMMUTABLE+•+ADMIN+RESTRICTED+•+USER+SANDBOXED;🚫+NOT+FOR+SCRIPT+KIDS" />
 </p>
 
-#### 𝗬𝗢𝗨𝗥 𝗖𝗥𝗨𝗦𝗛 ⟵𝗼_𝟬
+
+<div align="center">
 
 [![Live 3D Demo](https://img.shields.io/badge/🚀_Live_3D_Demo-Click_Here-blue?style=for-the-badge&logo=github)](https://yourusername.github.io/your-repo/)
 
 [![View Full 3D UI](https://img.shields.io/badge/🎮_Interactive_3D-Open_in_Browser-green?style=for-the-badge)](https://raw.githack.com/yourusername/your-repo/main/3d_ui.html)
 
-<div align="center">
+
+
+![3D Loading Animation](https://i.giphy.com/media/3o7abAHdYvZdBNnGZq/giphy.webp)
+
+<!-- আপনার তৈরি GIF লিংক দিন -->
+![My Bot 3D](https://your-link-to-gif.com/loading.gif)
 
 <img src="https://img.shields.io/badge/CLASS-BLACK%20OPS-000000?style=for-the-badge&logo=skull" />
 <img src="https://img.shields.io/badge/SECURITY-ZERO%20TRUST-ff0033?style=for-the-badge&logo=shield" />
