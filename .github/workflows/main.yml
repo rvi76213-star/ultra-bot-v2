@@ -26,4 +26,4 @@ jobs:
 
       # Step 4: Run the bot
       - name: Start Bot
-        run: node index.js
+        run: node src/index.js
