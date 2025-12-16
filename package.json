@@ -1,37 +1,22 @@
 {
-  "name": "messenger-bot-master",
-  "version": "2.0.0",
-  "description": "Ultra Professional Messenger Bot for Kiwi/Lemur Browser",
-  "main": "src/index.js",
+  "name": "ultra-bot-v2",
+  "version": "1.0.0",
+  "description": "Messenger bot v2",
+  "main": "index.js",
   "scripts": {
-    "start": "node start.js",
-    "login": "node login.js",
-    "setup": "node setup.js",
-    "test": "node test.js",
-    "backup": "node backup.js",
-    "dev": "nodemon src/index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
-    "fb-chat-api": "https://github.com/ntkhang03/fb-chat-api.git"",
-    "axios": "^1.6.0",
-    "chalk": "^4.1.2",
-    "fs-extra": "^11.2.0",
-    "moment": "^2.29.4",
-    "dotenv": "^16.3.0"
+    "fb-chat-api": "https://github.com/ntkhang03/fb-chat-api.git",
+    "axios": "^1.7.2",
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.11"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "keywords": [
-    "messenger-bot",
-    "facebook-bot",
-    "kiwi-browser",
-    "lemur-browser",
-    "appstate"
-  ],
-  "author": "RANA (MASTER 🪓) <ranaeditz333@gmail.com>",
+  "author": "",
   "license": "MIT"
 }
