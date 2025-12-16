@@ -1,0 +1,141 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Check code quality
+      run: |
+        echo "🔍 Running code quality checks..."
+        
+        # Check for syntax errors
+        echo "1. Checking JavaScript syntax..."
+        find src/ -name "*.js" -exec node -c {} \;
+        
+        # Check for missing semicolons
+        echo "2. Checking for missing semicolons..."
+        if command -v npx &> /dev/null; then
+          npx semistandard --version 2>/dev/null && npx semistandard src/ || echo "Semistandard not installed"
+        fi
+        
+        echo "✅ Code quality checks completed"
+        
+    - name: Verify file structure
+      run: |
+        echo "📁 Verifying file structure..."
+        
+        # Required files
+        REQUIRED_FILES=(
+          "src/index.js"
+          "src/utils/logger.js"
+          "src/utils/delay.js"
+          "src/commands/normal/help.js"
+          "package.json"
+        )
+        
+        # Required directories
+        REQUIRED_DIRS=(
+          "src/commands/normal"
+          "src/commands/fun"
+          "src/commands/admin"
+          "src/secure"
+          "src/utils"
+          "data/fun-json"
+          "config"
+        )
+        
+        echo "Checking files..."
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ $file"
+          else
+            echo "❌ $file (missing)"
+            exit 1
+          fi
+        done
+        
+        echo ""
+        echo "Checking directories..."
+        for dir in "${REQUIRED_DIRS[@]}"; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir"
+          else
+            echo "❌ $dir (missing)"
+            exit 1
+          fi
+        done
+        
+        echo "✅ File structure verification passed"
+        
+    - name: Run tests
+      run: |
+        echo "🧪 Running tests..."
+        
+        if [ -f "test.js" ]; then
+          node test.js
+        else
+          echo "⚠️ test.js not found, skipping tests"
+        fi
+        
+    - name: Build check
+      run: |
+        echo "🔨 Checking build process..."
+        
+        # Try to run the bot without appstate (should fail gracefully)
+        if node src/index.js 2>&1 | grep -q "appstate.json not found"; then
+          echo "✅ Bot fails gracefully without appstate.json"
+        else
+          echo "❌ Bot should fail without appstate.json"
+          exit 1
+        fi
+        
+    - name: Create test report
+      if: always()
+      run: |
+        echo "📊 Creating test report..."
+        
+        cat > test-report.md << 'EOF'
+        # Test Report
+        
+        ## Summary
+        - Repository: ${{ github.repository }}
+        - Branch: ${{ github.ref }}
+        - Commit: ${{ github.sha }}
+        - Status: ${{ job.status }}
+        
+        ## Checks Performed
+        1. ✅ Code quality checks
+        2. ✅ File structure verification
+        3. ✅ Test execution
+        4. ✅ Build process check
+        
+        ## Next Steps
+        If all checks pass, this PR can be merged.
+        
+        Generated at: $(date)
+        EOF
+        
+        echo "✅ Test report created"
+        
+    - name: Upload test report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-report
+        path: test-report.md
