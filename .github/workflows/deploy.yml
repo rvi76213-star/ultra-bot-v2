@@ -1,8 +1,6 @@
-name: Deploy
+name: Deploy Bot
 
-on:
-  push:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -11,17 +9,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node
+    - name: Setup Node 18
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         
     - name: Install deps
-      run: npm ci
+      run: npm install
       
-    - name: Deploy status
+    - name: Run bot
       run: |
-        echo "🚀 Deployment ready"
-        echo "Branch: ${{ github.ref }}"
-        echo "Commit: ${{ github.sha }}"
-        echo "Time: $(date)"
+        if [ -f "src/secure/appstate.json" ]; then
+          echo "Starting bot with appstate..."
+          timeout 600 npm start
+        else
+          echo "No appstate, testing only..."
+          node -c src/index.js && echo "✅ Syntax OK"
+        fi
