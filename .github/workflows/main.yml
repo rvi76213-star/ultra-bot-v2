@@ -1,0 +1,29 @@
+name: Run Ultra Bot V2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies (flexible, avoids npm ci issues)
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run the bot
+      - name: Start Bot
+        run: node index.js
