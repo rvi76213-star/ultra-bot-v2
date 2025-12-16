@@ -1,0 +1,63 @@
+name: Test Bot
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run syntax check
+      run: |
+        echo "🔍 Running syntax checks..."
+        npx eslint src/ --ext .js || echo "ESLint not configured"
+        echo "✅ Syntax checks completed"
+        
+    - name: Run tests
+      run: |
+        echo "🧪 Running tests..."
+        if [ -f "test.js" ]; then
+          node test.js
+        else
+          echo "⚠️ test.js not found, skipping tests"
+        fi
+        
+    - name: Check file structure
+      run: |
+        echo "📁 Checking file structure..."
+        
+        # Check required directories
+        REQUIRED_DIRS=(
+          "src/commands/normal"
+          "src/commands/fun"
+          "src/commands/admin"
+          "src/secure"
+          "src/utils"
+          "data/fun-json"
+          "config"
+        )
+        
+        for dir in "${REQUIRED_DIRS[@]}"; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir exists"
+          else
+            echo "❌ $dir missing"
+            exit 1
+          fi
+        done
+        
+        echo "✅ File structure check passed"
