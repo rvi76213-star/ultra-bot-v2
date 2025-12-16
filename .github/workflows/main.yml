@@ -1,0 +1,346 @@
+name: Deploy Messenger Bot
+
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ "main" ]
+  
+  # Trigger on schedule (every 6 hours)
+  schedule:
+    - cron: '0 */6 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual run'
+        required: false
+        default: 'Manual deployment'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    # Step 1: Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    # Step 2: Setup Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: |
+        npm ci
+        echo "✅ Dependencies installed"
+        
+    # Step 4: Check for appstate.json
+    - name: Check appstate.json
+      id: check_appstate
+      run: |
+        if [ -f "src/secure/appstate.json" ]; then
+          echo "✅ appstate.json found"
+          echo "appstate_exists=true" >> $GITHUB_OUTPUT
+          
+          # Validate appstate
+          FILE_SIZE=$(wc -c < "src/secure/appstate.json")
+          if [ $FILE_SIZE -gt 100 ]; then
+            echo "✅ appstate.json is valid"
+          else
+            echo "❌ appstate.json is empty or invalid"
+            echo "appstate_valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        else
+          echo "❌ appstate.json not found"
+          echo "appstate_exists=false" >> $GITHUB_OUTPUT
+        fi
+        
+    # Step 5: Create necessary directories
+    - name: Create directories
+      run: |
+        mkdir -p data/fun-json data/admin-photos data/logs config assets/owner-photos
+        echo "✅ Directories created"
+        
+    # Step 6: Create default config files if missing
+    - name: Setup configuration
+      run: |
+        if [ ! -f "config/config.json" ]; then
+          echo '{
+            "prefix": "!",
+            "admins": [],
+            "autoAddFriend": true,
+            "autoShare": true,
+            "maxGroups": 50,
+            "logLevel": "info",
+            "language": "bn",
+            "ownerName": "RANA (MASTER 🪓)",
+            "ownerLocation": "Faridpur, Dhaka, Bangladesh",
+            "ownerEmail": "ranaeditz333@gmail.com",
+            "ownerPhone": "01847634486"
+          }' > config/config.json
+          echo "✅ Created config.json"
+        fi
+        
+        if [ ! -f "config/settings.json" ]; then
+          echo '{
+            "delay": {
+              "min": 300,
+              "max": 600
+            },
+            "photo": {
+              "ownerCount": 12,
+              "adminMax": 3
+            },
+            "security": {
+              "maxCommandsPerMinute": 30,
+              "blockSpam": true
+            },
+            "features": {
+              "funEnabled": true,
+              "autoReply": false,
+              "welcomeMessage": true
+            }
+          }' > config/settings.json
+          echo "✅ Created settings.json"
+        fi
+        
+    # Step 7: Create fun JSON files if missing
+    - name: Create fun JSON files
+      run: |
+        # Create chor.json
+        if [ ! -f "data/fun-json/chor.json" ]; then
+          echo '[
+            "চোর ধর চোর! 🏃‍♂️",
+            "চোর পালাচ্ছে! 🚨",
+            "ধর ধর চোর! 👮",
+            "ওই যে চোর! 🕵️",
+            "চোর ধরা পড়ল! 🎉",
+            "সবাই মিলে চোর ধর! 👥",
+            "চোরের শেষ রক্ষা নাই! ⚖️",
+            "চোর শনাক্ত! 🔍",
+            "আলট্রা চোর! 🦸",
+            "চোর ভাই কেমন আছেন? 😂"
+          ]' > data/fun-json/chor.json
+          echo "✅ Created chor.json"
+        fi
+        
+        # Create murgi.json
+        if [ ! -f "data/fun-json/murgi.json" ]; then
+          echo '[
+            "মুরগি উড়ল! 🐔✈️",
+            "মুরগি ডিম দিল! 🥚",
+            "কুকড়া কু! 🐓",
+            "মুরগি পালাচ্ছে! 🏃‍♀️",
+            "মুরগি ধর! 🎯",
+            "ফ্রাইড চিকেন! 🍗",
+            "মুরগির বাচ্চা! 🐤",
+            "কোরবানির মুরগি! 🕌",
+            "মুরগি মার খায়! 🥊",
+            "লিভ মুরগি! 🐔"
+          ]' > data/fun-json/murgi.json
+          echo "✅ Created murgi.json"
+        fi
+        
+        # Create abal.json
+        if [ ! -f "data/fun-json/abal.json" ]; then
+          echo '[
+            "আবাল শুরু! 🎭",
+            "আবাল টাইম! ⏰",
+            "আবাল আবাল! 🤪",
+            "আবাল মোড এক্টিভেট! 🚀",
+            "আবাল পাওয়ার! 💪",
+            "আবাল লেভেল ম্যাক্স! 📈",
+            "আবাল গেম শুরু! 🎮",
+            "আবাল অ্যাটাক! ⚔️",
+            "আবাল ডিফেন্স! 🛡️",
+            "আবাল ফাইনাল! 🏆"
+          ]' > data/fun-json/abal.json
+          echo "✅ Created abal.json"
+        fi
+        
+        # Create senior.json
+        if [ ! -f "data/fun-json/senior.json" ]; then
+          echo '[
+            "সিনিয়র এলো! 👴",
+            "সিনিয়রের সম্মান! 🙏",
+            "সিনিয়র টিচার! 👨‍🏫",
+            "সিনিয়র অ্যাডভাইস! 💡",
+            "সিনিয়র পাওয়ার! 🔥",
+            "সিনিয়র মোড! 🎩",
+            "সিনিয়র কম্যান্ড! ⚡",
+            "সিনিয়র প্রেজেন্স! 👑",
+            "সিনিয়র বুদ্ধি! 🧠",
+            "সিনিয়র ফাইনাল! 🏁"
+          ]' > data/fun-json/senior.json
+          echo "✅ Created senior.json"
+        fi
+        
+        # Create cow.json
+        if [ ! -f "data/fun-json/cow.json" ]; then
+          echo '[
+            "গরু মো! 🐄",
+            "গরু চরছে! 🌾",
+            "গরুর দুধ! 🥛",
+            "গরু পাল! 🐮",
+            "গরু মার্কেট! 🏪",
+            "গরু হাম্বা! 🔊",
+            "গরু রেস! 🏃‍♂️",
+            "গরু ফার্ম! 🏞️",
+            "গরু বাচ্চা! 🐂",
+            "গরু কিং! 👑"
+          ]' > data/fun-json/cow.json
+          echo "✅ Created cow.json"
+        fi
+        
+        # Create goat.json
+        if [ ! -f "data/fun-json/goat.json" ]; then
+          echo '[
+            "ছাগল মে! 🐐",
+            "ছাগল চরছে! 🌿",
+            "ছাগলের দৌড়! 🏃",
+            "ছাগল রাজা! 🤴",
+            "ছাগল আর্টিস্ট! 🎨",
+            "ছাগল জাম্প! 🦘",
+            "ছাগল ফ্যামিলি! 👨‍👩‍👧‍👦",
+            "ছাগল পলিটিশিয়ান! 🎭",
+            "ছাগল স্টাইল! 💃",
+            "ছাগল লিজেন্ড! 🌟"
+          ]' > data/fun-json/goat.json
+          echo "✅ Created goat.json"
+        fi
+        
+    # Step 8: Start the bot (if appstate exists)
+    - name: Start Messenger Bot
+      if: steps.check_appstate.outputs.appstate_exists == 'true'
+      run: |
+        echo "🚀 Starting YOUR CRUSH Bot..."
+        echo "👑 Developer: RANA (MASTER 🪓)"
+        echo "📍 Location: Faridpur, Dhaka, Bangladesh"
+        echo ""
+        
+        # Start the bot in background
+        npm start &
+        BOT_PID=$!
+        
+        # Save PID to file for later use
+        echo $BOT_PID > /tmp/bot_pid.txt
+        
+        # Wait for bot to initialize
+        echo "⏳ Waiting for bot to initialize..."
+        sleep 30
+        
+        # Check if bot is running
+        if ps -p $BOT_PID > /dev/null; then
+          echo "✅ Bot is running with PID: $BOT_PID"
+        else
+          echo "❌ Bot failed to start"
+          exit 1
+        fi
+        
+    # Step 9: Keep bot alive for specified time
+    - name: Keep bot running
+      if: steps.check_appstate.outputs.appstate_exists == 'true'
+      run: |
+        echo "⏰ Bot will run for 5 minutes..."
+        
+        # Run for 5 minutes (300 seconds)
+        for i in {1..300}; do
+          # Check if bot is still running
+          BOT_PID=$(cat /tmp/bot_pid.txt 2>/dev/null || echo "")
+          
+          if [ -z "$BOT_PID" ] || ! ps -p $BOT_PID > /dev/null; then
+            echo "❌ Bot stopped unexpectedly at $i seconds"
+            break
+          fi
+          
+          # Every 30 seconds, log status
+          if [ $((i % 30)) -eq 0 ]; then
+            MINUTES=$((i / 60))
+            SECONDS=$((i % 60))
+            echo "✅ Bot running for ${MINUTES}m ${SECONDS}s"
+          fi
+          
+          sleep 1
+        done
+        
+        echo "⏰ 5 minutes completed"
+        
+    # Step 10: Stop the bot
+    - name: Stop Messenger Bot
+      if: steps.check_appstate.outputs.appstate_exists == 'true'
+      run: |
+        echo "🛑 Stopping bot..."
+        
+        # Read PID from file
+        BOT_PID=$(cat /tmp/bot_pid.txt 2>/dev/null || echo "")
+        
+        if [ -n "$BOT_PID" ] && ps -p $BOT_PID > /dev/null; then
+          # Send SIGTERM to bot
+          kill $BOT_PID
+          sleep 5
+          
+          # Force kill if still running
+          if ps -p $BOT_PID > /dev/null; then
+            kill -9 $BOT_PID
+          fi
+          
+          echo "✅ Bot stopped successfully"
+        else
+          echo "⚠️ Bot was not running"
+        fi
+        
+        # Cleanup PID file
+        rm -f /tmp/bot_pid.txt
+        
+    # Step 11: Upload logs as artifact
+    - name: Upload bot logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: bot-logs
+        path: |
+          data/logs/
+          npm-debug.log*
+        retention-days: 7
+        
+    # Step 12: Save workflow status
+    - name: Save workflow status
+      if: always()
+      run: |
+        STATUS=$([ "${{ job.status }}" == "success" ] && echo "SUCCESS" || echo "FAILURE")
+        TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        
+        echo "Workflow Status: $STATUS" >> workflow-status.txt
+        echo "Timestamp: $TIMESTAMP" >> workflow-status.txt
+        echo "AppState Exists: ${{ steps.check_appstate.outputs.appstate_exists }}" >> workflow-status.txt
+        echo "Run Reason: ${{ github.event.inputs.reason || github.event_name }}" >> workflow-status.txt
+        
+    # Step 13: Upload workflow status
+    - name: Upload workflow status
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: workflow-status
+        path: workflow-status.txt
+        
+    # Step 14: Send notification (Optional - needs setup)
+    - name: Send notification
+      if: always()
+      run: |
+        echo "📋 Workflow completed: ${{ job.status }}"
+        echo "🔗 Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
+        # You can add Discord/Telegram/Email notification here
+        # Example for Discord webhook:
+        # curl -H "Content-Type: application/json" \
+        #   -d "{\"content\":\"GitHub Action completed: ${{ job.status }}\nRepository: ${{ github.repository }}\"}" \
+        #   YOUR_DISCORD_WEBHOOK_URL
