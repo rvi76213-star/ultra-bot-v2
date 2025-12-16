@@ -12,7 +12,7 @@
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
-    "facebook-chat-api": "github:ntkhang03/fb-chat-api",
+    "fb-chat-api": "https://github.com/ntkhang03/fb-chat-api.git"",
     "axios": "^1.6.0",
     "chalk": "^4.1.2",
     "fs-extra": "^11.2.0",
