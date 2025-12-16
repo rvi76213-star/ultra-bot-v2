@@ -1,0 +1,221 @@
+name: Run Messenger Bot
+
+on:
+  # Run on push to main branch
+  push:
+    branches: [ "main" ]
+  
+  # Run every 6 hours automatically
+  schedule:
+    - cron: '0 */6 * * *'
+  
+  # Allow manual run
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Step 1: Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    # Step 2: Setup Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: npm install
+      
+    # Step 4: Check appstate.json
+    - name: Check appstate.json
+      id: check-appstate
+      run: |
+        if [ -f "src/secure/appstate.json" ]; then
+          echo "✅ appstate.json exists"
+          echo "appstate-exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ appstate.json not found"
+          echo "appstate-exists=false" >> $GITHUB_OUTPUT
+        fi
+        
+    # Step 5: Create missing config files
+    - name: Setup config files
+      run: |
+        # Create config directory if not exists
+        mkdir -p config
+        
+        # Create config.json if not exists
+        if [ ! -f "config/config.json" ]; then
+          cat > config/config.json << 'EOF'
+{
+  "prefix": "!",
+  "admins": [],
+  "autoAddFriend": true,
+  "autoShare": true,
+  "maxGroups": 50,
+  "logLevel": "info",
+  "language": "bn",
+  "ownerName": "RANA (MASTER 🪓)",
+  "ownerLocation": "Faridpur, Dhaka, Bangladesh",
+  "ownerEmail": "ranaeditz333@gmail.com",
+  "ownerPhone": "01847634486"
+}
+EOF
+          echo "✅ Created config.json"
+        fi
+        
+        # Create settings.json if not exists
+        if [ ! -f "config/settings.json" ]; then
+          cat > config/settings.json << 'EOF'
+{
+  "delay": {
+    "min": 300,
+    "max": 600
+  },
+  "photo": {
+    "ownerCount": 12,
+    "adminMax": 3
+  },
+  "security": {
+    "maxCommandsPerMinute": 30,
+    "blockSpam": true
+  },
+  "features": {
+    "funEnabled": true,
+    "autoReply": false,
+    "welcomeMessage": true
+  }
+}
+EOF
+          echo "✅ Created settings.json"
+        fi
+        
+    # Step 6: Create data directories
+    - name: Create data directories
+      run: |
+        mkdir -p data/fun-json data/admin-photos data/logs
+        echo "✅ Created data directories"
+        
+    # Step 7: Start bot (if appstate exists)
+    - name: Start Messenger Bot
+      if: steps.check-appstate.outputs.appstate-exists == 'true'
+      run: |
+        echo "🚀 Starting YOUR CRUSH Bot..."
+        echo "👑 Developer: RANA (MASTER 🪓)"
+        echo "🤖 Bot: YOUR CRUSH ⟵o_0"
+        echo "📅 Started at: $(date)"
+        echo ""
+        
+        # Start bot in background
+        npm start &
+        BOT_PID=$!
+        
+        echo "📝 Bot PID: $BOT_PID"
+        echo $BOT_PID > bot.pid
+        
+        # Wait 30 seconds for bot to initialize
+        echo "⏳ Waiting for bot initialization..."
+        sleep 30
+        
+        # Check if bot is still running
+        if ps -p $BOT_PID > /dev/null; then
+          echo "✅ Bot is running successfully"
+        else
+          echo "❌ Bot failed to start"
+          exit 1
+        fi
+        
+    # Step 8: Keep bot running for 10 minutes
+    - name: Run bot for 10 minutes
+      if: steps.check-appstate.outputs.appstate-exists == 'true'
+      run: |
+        echo "⏰ Bot will run for 10 minutes..."
+        
+        # Read PID from file
+        BOT_PID=$(cat bot.pid 2>/dev/null)
+        
+        if [ -z "$BOT_PID" ]; then
+          echo "❌ Could not find bot PID"
+          exit 1
+        fi
+        
+        # Run for 10 minutes (600 seconds)
+        for i in {1..600}; do
+          # Check if bot is still alive
+          if ! ps -p $BOT_PID > /dev/null; then
+            echo "❌ Bot stopped at $i seconds"
+            break
+          fi
+          
+          # Print status every 60 seconds
+          if [ $((i % 60)) -eq 0 ]; then
+            minutes=$((i / 60))
+            echo "✅ Bot running for $minutes minute(s)"
+          fi
+          
+          sleep 1
+        done
+        
+        echo "⏰ 10 minutes completed"
+        
+    # Step 9: Stop bot gracefully
+    - name: Stop bot
+      if: steps.check-appstate.outputs.appstate-exists == 'true'
+      run: |
+        echo "🛑 Stopping bot..."
+        
+        # Read PID from file
+        BOT_PID=$(cat bot.pid 2>/dev/null)
+        
+        if [ -n "$BOT_PID" ]; then
+          # Try graceful shutdown
+          kill $BOT_PID 2>/dev/null || true
+          sleep 5
+          
+          # Force kill if still running
+          if ps -p $BOT_PID > /dev/null; then
+            kill -9 $BOT_PID 2>/dev/null || true
+          fi
+          
+          echo "✅ Bot stopped"
+        else
+          echo "⚠️ No bot PID found"
+        fi
+        
+        # Cleanup PID file
+        rm -f bot.pid
+        
+    # Step 10: Upload logs
+    - name: Upload bot logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: bot-logs
+        path: |
+          data/logs/
+          npm-debug.log*
+        retention-days: 7
+        
+    # Step 11: Summary
+    - name: Workflow summary
+      run: |
+        echo "📋 WORKFLOW SUMMARY"
+        echo "==================="
+        echo "Repository: ${{ github.repository }}"
+        echo "Run ID: ${{ github.run_id }}"
+        echo "Status: ${{ job.status }}"
+        echo "Trigger: ${{ github.event_name }}"
+        echo "AppState: ${{ steps.check-appstate.outputs.appstate-exists }}"
+        echo "Timestamp: $(date)"
+        
+        if [ "${{ steps.check-appstate.outputs.appstate-exists }}" == "true" ]; then
+          echo "✅ Bot ran successfully"
+        else
+          echo "⚠️ Bot skipped - appstate.json missing"
+          echo "💡 Run 'npm run login' locally first"
+        fi
