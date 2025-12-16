@@ -1,91 +1,36 @@
-name: Deploy Messenger Bot
+name: Node.js CI
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-    # Step 1: Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    # Step 2: Setup Node.js 18 (not 20)
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    # Step to check out the repository code
+    - uses: actions/checkout@v2
+
+    # Step to set up the specified Node.js version
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
       with:
-        node-version: '18.20.0'  # Node 18 ব্যবহার করুন, 20 না
-        cache: 'npm'
-        
-    # Step 3: Install dependencies with npm install (not ci)
+        node-version: ${{ matrix.node-version }}
+
+    # Step to install dependencies
     - name: Install dependencies
-      run: |
-        echo "📦 Installing dependencies..."
-        npm install
-        echo "✅ Dependencies installed"
-        
-    # Step 4: Create necessary directories
-    - name: Setup directories
-      run: |
-        mkdir -p src/secure data/fun-json data/logs config assets/owner-photos
-        echo "✅ Directories created"
-        
-    # Step 5: Check appstate
-    - name: Check appstate.json
-      id: check-appstate
-      run: |
-        if [ -f "src/secure/appstate.json" ]; then
-          echo "✅ appstate.json exists"
-          echo "exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "⚠️ appstate.json not found"
-          echo "Bot will run in test mode"
-          echo "exists=false" >> $GITHUB_OUTPUT
-        fi
-        
-    # Step 6: Run bot (with or without appstate)
-    - name: Run Messenger Bot
-      run: |
-        echo "🤖 YOUR CRUSH Bot Starting..."
-        echo "👑 Developer: RANA (MASTER 🪓)"
-        echo "📅 Date: $(date)"
-        echo ""
-        
-        if [ -f "src/secure/appstate.json" ]; then
-          echo "🚀 Starting in LIVE mode (with appstate)"
-          echo "⏰ Will run for 10 minutes..."
-          
-          # Start bot with timeout
-          timeout 600 npm start || echo "✅ Bot stopped after timeout"
-        else
-          echo "🧪 Starting in TEST mode (without appstate)"
-          echo "Testing bot structure and dependencies..."
-          
-          # Test mode - check if bot would start
-          if node -c src/index.js; then
-            echo "✅ Bot syntax is correct"
-            echo "✅ All dependencies are installed"
-            echo "⚠️ Add appstate.json to run in live mode"
-          else
-            echo "❌ Bot has syntax errors"
-            exit 1
-          fi
-        fi
-        
-    # Step 7: Final status
-    - name: Deployment status
-      run: |
-        echo ""
-        echo "📋 DEPLOYMENT SUMMARY"
-        echo "===================="
-        echo "Status: SUCCESS"
-        echo "Node.js: $(node --version)"
-        echo "npm: $(npm --version)"
-        echo "AppState: $([ -f "src/secure/appstate.json" ] && echo "PRESENT" || echo "MISSING")"
-        echo "Time: $(date)"
-        echo ""
-        echo "✅ Bot deployment completed!"
+      run: npm install
+
+    # Step to run the bot with the correct port
+    - name: Start the bot
+      env:
+        PORT: 8080
+      run: npm start
