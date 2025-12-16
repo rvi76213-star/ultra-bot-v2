@@ -1,32 +1,23 @@
 {
   "name": "messenger-bot-master",
   "version": "2.0.0",
-  "description": "Ultra Professional Messenger Bot with appstate.json support",
+  "description": "Ultra Professional Messenger Bot for Kiwi/Lemur Browser",
   "main": "src/index.js",
   "scripts": {
     "start": "node start.js",
     "login": "node login.js",
     "setup": "node setup.js",
-    "dev": "nodemon src/index.js",
     "test": "node test.js",
-    "backup": "node backup.js"
+    "backup": "node backup.js",
+    "dev": "nodemon src/index.js"
   },
   "dependencies": {
     "facebook-chat-api": "github:ntkhang03/fb-chat-api",
-    "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
     "fs-extra": "^11.2.0",
     "moment": "^2.29.4",
-    "chalk": "^4.1.2",
-    "cloudinary": "^1.41.1",
-    "firebase-admin": "^11.11.1",
-    "express": "^4.18.2",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "node-cron": "^3.0.3",
-    "form-data": "^4.0.0",
-    "request": "^2.88.2",
-    "cheerio": "^1.0.0-rc.12"
+    "dotenv": "^16.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
@@ -37,14 +28,10 @@
   "keywords": [
     "messenger-bot",
     "facebook-bot",
-    "appstate",
-    "automation",
-    "your-crush-bot"
+    "kiwi-browser",
+    "lemur-browser",
+    "appstate"
   ],
   "author": "RANA (MASTER 🪓) <ranaeditz333@gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/messenger-bot.git"
-  }
+  "license": "MIT"
 }
