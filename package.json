@@ -1,15 +1,12 @@
 {
-  "name": "messenger-bot-master",
+  "name": "ultra-bot-v2",
   "version": "2.0.0",
-  "description": "Ultra Professional Messenger Bot with appstate.json support",
+  "description": "Ultra Professional Facebook Messenger Bot",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "login": "node login.js",
-    "setup": "node setup.js",
     "dev": "nodemon src/index.js",
-    "test": "node test.js",
-    "backup": "node backup.js"
+    "login": "node login.js"
   },
   "dependencies": {
     "facebook-chat-api": "github:ntkhang03/fb-chat-api",
@@ -18,15 +15,14 @@
     "fs-extra": "^11.2.0",
     "moment": "^2.29.4",
     "chalk": "^4.1.2",
-    "cloudinary": "^1.41.1",
-    "firebase-admin": "^11.11.1",
     "express": "^4.18.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "node-cron": "^3.0.3",
     "form-data": "^4.0.0",
     "request": "^2.88.2",
-    "cheerio": "^1.0.0-rc.12"
+    "cheerio": "^1.0.0-rc.12",
+    "node-machine-id": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
@@ -34,17 +30,5 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": [
-    "messenger-bot",
-    "facebook-bot",
-    "appstate",
-    "automation",
-    "your-crush-bot"
-  ],
-  "author": "RANA (MASTER 🪓) <ranaeditz333@gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/messenger-bot.git"
-  }
+  "license": "MIT"
 }
